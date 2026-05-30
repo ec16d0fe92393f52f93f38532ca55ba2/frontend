@@ -1,32 +1,35 @@
-import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
+
+import { userApi, setUser } from '@entities/user';
+
+import { useAppDispatch } from '@shared/hooks/useAppDispatch';
 
 import { useRegisterMutation } from '../api/authApi';
 import { RegisterRequest } from '../types/register';
 
 export const useRegister = () => {
-    const [registerTrigger, { data, isLoading, error }] = useRegisterMutation();
+    const [registerTrigger, { isLoading }] = useRegisterMutation();
+    const dispatch = useAppDispatch();
     const navigate = useNavigate();
 
-    const trigger = async (data: RegisterRequest) => {
-        await registerTrigger(data);
-    };
-
-    useEffect(() => {
-        if (data) {
-            const token = data.accessToken.startsWith('Bearer ')
-                ? data.accessToken.split(' ')[1]
-                : data.accessToken;
+    const trigger = async (credentials: RegisterRequest) => {
+        try {
+            const result = await registerTrigger(credentials).unwrap();
+            const rawToken = result.token;
+            const token = rawToken.startsWith('Bearer ') ? rawToken.split(' ')[1] : rawToken;
             localStorage.setItem('accessToken', token);
+
+            const meResult = await dispatch(userApi.endpoints.getMe.initiate(null));
+            if (meResult.data) dispatch(setUser(meResult.data));
+
             toast.success('Вы успешно зарегистрированы');
-            setTimeout(() => navigate('/'), 1500);
-        }
-        if (error && 'data' in error) {
-            const message = (error.data as { message?: string })?.message ?? 'Ошибка регистрации';
+            navigate('/');
+        } catch (err) {
+            const message = (err as { data?: { message?: string } })?.data?.message ?? 'Ошибка регистрации';
             toast.error(message);
         }
-    }, [data, error, navigate]);
+    };
 
-    return { trigger, data, isLoading };
+    return { trigger, isLoading };
 };

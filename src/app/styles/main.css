@@ -2,27 +2,36 @@
 
 @theme {
     /* ── Background & Surface ── */
-    --color-bg: #F5FBF5;
-    --color-surface: #FFFFFF;
+    --color-bg: #FCFCFA;
+    --color-surface: #FDFDFD;
+    --color-surface-alt: #F3F8F1;
 
     /* ── Primary (green) ── */
-    --color-primary: #3D7D3F;
-    --color-primary-light: #EAF4EA;
-    --color-primary-dark: #2A5C2C;
+    --color-primary: #89B776;
+    --color-primary-light: #edf6e8;
+    --color-primary-dark: #143414;
     --color-primary-foreground: #FFFFFF;
 
     /* ── Text ── */
-    --color-text-primary: #1C2B1C;
-    --color-text-secondary: #6B816B;
-    --color-text-muted: #9BA89B;
+    --color-text-primary: #143414;
+    --color-text-secondary: #6a7f6a;
+    --color-text-muted: #8aaa82;
+    --color-text-faint: #b0c8a8;
 
-    /* ── Accents ── */
-    --color-accent: #FF6B35;
-    --color-success: #56B757;
-    --color-border: #D8EBD8;
+    /* ── Status ── */
+    --color-success: #89B776;
+    --color-expense: #d06050;
+    --color-expense-light: #fdf0ee;
+    --color-warning: #d4944a;
+    --color-gold: #e8c040;
+    --color-accent: #d07848;
+
+    /* ── Border ── */
+    --color-border: #e8f0e2;
 
     /* ── Typography ── */
-    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif;
+    --font-serif: 'DM Serif Display', serif;
 
     /* ── Border radius ── */
     --radius-sm: 8px;
@@ -38,16 +47,21 @@
 [data-theme='dark'] {
     --color-bg: #0F1A0F;
     --color-surface: #1C2B1C;
-    --color-primary: #56B757;
+    --color-surface-alt: #162616;
+    --color-primary: #89B776;
     --color-primary-light: #1C2B1C;
-    --color-primary-dark: #6DD76F;
+    --color-primary-dark: #E8F5E8;
     --color-primary-foreground: #0F1A0F;
     --color-text-primary: #E8F5E8;
     --color-text-secondary: #8FAF8F;
     --color-text-muted: #5A705A;
-    --color-accent: #FF8C5A;
-    --color-success: #6DD76F;
+    --color-text-faint: #3A5A3A;
     --color-border: #2D4A2D;
+    --color-expense: #e07060;
+    --color-expense-light: #3a1a18;
+    --color-warning: #e4a45a;
+    --color-gold: #f0d050;
+    --color-accent: #e08858;
 }
 
 /* ── Base ── */
@@ -63,6 +77,10 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
+.font-serif {
+    font-family: var(--font-serif);
+}
+
 /* ── Safe area insets (notched devices) ── */
 :root {
     --safe-top: env(safe-area-inset-top, 0px);
@@ -76,4 +94,71 @@ input,
 textarea,
 select {
     font-size: 16px;
+}
+
+/* ── Animations ── */
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+@keyframes pulseGreen {
+    0%, 100% { box-shadow: 0 4px 16px rgba(137, 183, 118, 0.35); }
+    50%       { box-shadow: 0 4px 24px rgba(137, 183, 118, 0.65); }
+}
+
+.animate-fade-in-up {
+    animation: fadeInUp 0.22s ease-out both;
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.18s ease-out both;
+}
+
+.fab-pulse {
+    animation: pulseGreen 2.5s ease-in-out infinite;
+}
+
+/* ── Interactive elements ── */
+.card-interactive {
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-interactive:hover {
+    transform: scale(1.015);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card-interactive:active {
+    transform: scale(0.97);
+    transition-duration: 0.08s;
+}
+
+.btn-press {
+    transition: transform 0.1s ease, opacity 0.12s ease;
+}
+
+.btn-press:hover {
+    opacity: 0.88;
+}
+
+.btn-press:active {
+    transform: scale(0.95);
+    transition-duration: 0.06s;
+}
+
+.row-hover {
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+    border-radius: 10px;
+}
+
+.row-hover:hover {
+    background-color: var(--color-primary-light);
 }

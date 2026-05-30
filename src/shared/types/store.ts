@@ -1,6 +1,5 @@
 export interface RefreshResponse {
-    accessToken: string;
-    refreshToken?: string;
+    token: string;
 }
 
 export type { RootState, AppDispatch } from '@shared/store/store';

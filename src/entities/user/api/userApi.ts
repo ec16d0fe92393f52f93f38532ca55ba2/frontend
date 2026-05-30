@@ -6,7 +6,7 @@ export const userApi = mainApi.injectEndpoints({
     endpoints: (build) => ({
         getMe: build.query<User, null>({
             query: () => ({
-                url: `/user`,
+                url: `/authapp/me`,
                 method: 'GET',
             }),
             providesTags: ['User'],

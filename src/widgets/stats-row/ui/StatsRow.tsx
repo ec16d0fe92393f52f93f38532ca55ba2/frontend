@@ -1,46 +1,61 @@
-import { TrendingUp, Flame } from 'lucide-react';
+const STATS = [
+    {
+        icon: (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#89B776" strokeWidth="2">
+                <rect x="2" y="5" width="20" height="14" rx="2" /><path d="M2 10h20" />
+            </svg>
+        ),
+        label: 'Траты сегодня',
+        value: '2 500 ₽',
+        sub: '↗ +12% вчера',
+        subColor: '#c07040',
+        extra: null,
+    },
+    {
+        icon: (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#89B776" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" />
+            </svg>
+        ),
+        label: '% микрошага',
+        value: '72%',
+        sub: null,
+        subColor: '',
+        extra: { progress: 72 },
+    },
+    {
+        icon: (
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#d07848" strokeWidth="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+            </svg>
+        ),
+        label: 'Дней подряд',
+        value: '12',
+        sub: 'дней 🔥',
+        subColor: 'var(--color-text-faint)',
+        extra: null,
+    },
+];
 
-import { Card, Text, Icon, ProgressBar } from '@shared/ui';
-
-export const StatsRow = () => {
-    return (
-        <div className="grid grid-cols-3 gap-2">
-            {/* Сбережения */}
-            <Card padding="sm" shadow className="flex flex-col gap-1">
-                <div className="w-8 h-8 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center">
-                    <span className="text-sm">🐷</span>
+export const StatsRow = () => (
+    <div className="flex gap-[10px]">
+        {STATS.map((s, i) => (
+            <div key={i} className="flex-1 rounded-[16px] p-3 border"
+                style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }}>
+                <div className="flex items-center gap-[5px] mb-[5px]">
+                    {s.icon}
+                    <span className="text-[10px] font-medium" style={{ color: 'var(--color-text-muted)' }}>{s.label}</span>
                 </div>
-                <Text size="xs" variant="secondary">Сбережения</Text>
-                <Text style={{ fontWeight: 700, fontSize: '1rem' }}>1 250 ₽</Text>
-                <div className="flex items-center gap-0.5">
-                    <Icon as={TrendingUp} size={10} color="var(--color-success)" />
-                    <Text size="xs" style={{ color: 'var(--color-success)', fontWeight: 600 }}>+12%</Text>
-                </div>
-            </Card>
-
-            {/* Бюджет */}
-            <Card padding="sm" shadow className="flex flex-col gap-1">
-                <div className="w-8 h-8 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center">
-                    <span className="text-sm">👛</span>
-                </div>
-                <Text size="xs" variant="secondary">Бюджет</Text>
-                <Text style={{ fontWeight: 700, fontSize: '1rem' }}>2 300 ₽</Text>
-                <ProgressBar value={35} className="h-1" />
-                <Text size="xs" variant="secondary">осталось 800 ₽</Text>
-            </Card>
-
-            {/* Стрик */}
-            <Card padding="sm" shadow className="flex flex-col gap-1">
-                <div className="w-8 h-8 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center">
-                    <Icon as={Flame} size={16} color="var(--color-accent)" />
-                </div>
-                <Text size="xs" variant="secondary">Стрик</Text>
-                <div className="flex items-baseline gap-0.5">
-                    <Text style={{ fontWeight: 700, fontSize: '1rem' }}>14</Text>
-                    <Text size="xs" variant="secondary">дней</Text>
-                </div>
-                <Text size="xs" style={{ color: 'var(--color-success)', fontWeight: 600 }}>Рекорд: 21</Text>
-            </Card>
-        </div>
-    );
-};
+                <div className="text-[16px] font-bold" style={{ color: 'var(--color-text-primary)' }}>{s.value}</div>
+                {s.extra && (
+                    <div className="rounded-[4px] h-[4px] mt-[7px]" style={{ background: '#e4f0dc' }}>
+                        <div className="h-full rounded-[4px]" style={{ width: `${s.extra.progress}%`, background: 'var(--color-primary)' }} />
+                    </div>
+                )}
+                {s.sub && (
+                    <div className="text-[10px] mt-[3px]" style={{ color: s.subColor }}>{s.sub}</div>
+                )}
+            </div>
+        ))}
+    </div>
+);

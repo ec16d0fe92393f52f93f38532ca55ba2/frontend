@@ -1,35 +1,36 @@
-import { BookOpen } from 'lucide-react';
+import { MOCK_LESSONS } from '@shared/mocks';
 
-import { LessonPath } from '@widgets/lesson-path';
+import { LearnHeader } from './LearnHeader';
+import { OverallProgressCard } from './OverallProgressCard';
+import { CurrentLessonCard } from './CurrentLessonCard';
+import { LessonListItem } from './LessonListItem';
+import { MotivationalFooter } from './MotivationalFooter';
 
-import { Text, Icon } from '@shared/ui';
-import { MOCK_LESSONS, MOCK_LESSONS_TOTAL, MOCK_LESSONS_COMPLETED, MOCK_TREE } from '@shared/mocks';
+const currentLesson = MOCK_LESSONS.find((l) => l.status === 'in-progress');
 
-export const LearnPage = () => {
-    return (
-        <div className="flex flex-col gap-5">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div>
-                    <div className="flex items-center gap-2">
-                        <Icon as={BookOpen} size={20} color="var(--color-primary)" />
-                        <Text style={{ fontWeight: 700, fontSize: '1.1rem' }}>Учись и Расти</Text>
-                    </div>
-                    <Text size="xs" variant="secondary">Строй знания. Расти к будущему.</Text>
-                </div>
-                <div className="flex items-center gap-1 px-2 py-1 rounded-full" style={{ background: 'var(--color-primary-light)' }}>
-                    <span className="text-sm">🌱</span>
-                    <Text size="xs" style={{ color: 'var(--color-primary)', fontWeight: 700 }}>120 XP</Text>
-                </div>
+export const LearnPage = () => (
+    <div className="flex flex-col gap-3 animate-fade-in-up">
+        <LearnHeader />
+        <OverallProgressCard />
+
+        {currentLesson && (
+            <div>
+                <div className="text-[11px] font-semibold tracking-[0.04em] mb-2 px-1"
+                    style={{ color: 'var(--color-text-faint)' }}>ПРОДОЛЖИТЬ</div>
+                <CurrentLessonCard lesson={currentLesson} />
             </div>
+        )}
 
-            <LessonPath
-                lessons={MOCK_LESSONS}
-                level={MOCK_TREE.level}
-                xpTotal={MOCK_TREE.xpTotal}
-                completedCount={MOCK_LESSONS_COMPLETED}
-                totalCount={MOCK_LESSONS_TOTAL}
-            />
+        <div>
+            <div className="text-[11px] font-semibold tracking-[0.04em] mb-2 px-1"
+                style={{ color: 'var(--color-text-faint)' }}>ВСЕ УРОКИ</div>
+            <div className="flex flex-col gap-2">
+                {MOCK_LESSONS.map((lesson) => (
+                    <LessonListItem key={lesson.id} lesson={lesson} />
+                ))}
+            </div>
         </div>
-    );
-};
+
+        <MotivationalFooter />
+    </div>
+);

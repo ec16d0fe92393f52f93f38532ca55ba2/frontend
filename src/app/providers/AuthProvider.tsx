@@ -11,7 +11,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const hasToken = Boolean(localStorage.getItem('accessToken'));
-    const { data, isError, isLoading } = useGetMeQuery(null, { skip: !hasToken });
+    const { data, isError, isLoading, isUninitialized } = useGetMeQuery(null, { skip: !hasToken });
     const dispatch = useAppDispatch();
 
     useEffect(() => {
@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
     }, [data, isError, dispatch]);
 
-    if (hasToken && isLoading) {
+    if (hasToken && (isLoading || isUninitialized)) {
         return (
             <div className="flex h-screen items-center justify-center bg-[var(--color-bg)]">
                 <Spinner size="lg" className="text-[var(--color-primary)]" />

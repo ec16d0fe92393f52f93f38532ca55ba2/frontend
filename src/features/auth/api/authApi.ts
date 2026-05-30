@@ -8,25 +8,25 @@ export const authApi = mainApi.injectEndpoints({
     endpoints: (build) => ({
         login: build.mutation<AuthResponse, LoginRequest>({
             query: (data) => ({
-                url: `/auth/login/`,
+                url: `/authapp/login`,
                 method: 'POST',
                 body: data,
             }),
         }),
         register: build.mutation<AuthResponse, RegisterRequest>({
             query: (data) => ({
-                url: `/auth/register/`,
+                url: `/authapp/register`,
                 method: 'POST',
                 body: data,
             }),
         }),
-        logout: build.query<null, null>({
+        logout: build.mutation<null, void>({
             query: () => ({
-                url: `/auth/logout`,
-                method: 'GET',
+                url: `/authapp/logout`,
+                method: 'POST',
             }),
         }),
     }),
 });
 
-export const { useLoginMutation, useRegisterMutation, useLazyLogoutQuery } = authApi;
+export const { useLoginMutation, useRegisterMutation, useLogoutMutation } = authApi;

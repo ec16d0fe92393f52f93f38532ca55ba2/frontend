@@ -7,3 +7,8 @@ export * from './Typography';
 export * from './Spinner';
 export * from './Badge';
 export * from './ProgressBar';
+export * from './Switch';
+export * from './Tabs';
+export * from './DateSelector';
+export * from './AmountInput';
+export * from './PhoneInput';

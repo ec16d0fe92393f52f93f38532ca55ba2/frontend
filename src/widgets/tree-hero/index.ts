@@ -1,1 +1,1 @@
-export { TreeHero } from './ui';
+export { TreeHero, XpCard, TreeBlock } from './ui';

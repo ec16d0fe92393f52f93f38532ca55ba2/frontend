@@ -1,79 +1,39 @@
-import { Bell, ChevronRight } from 'lucide-react';
+import { Bell } from 'lucide-react';
 
-import { TreeHero } from '@widgets/tree-hero';
+import { XpCard, TreeBlock } from '@widgets/tree-hero';
 import { StatsRow } from '@widgets/stats-row';
 
-import { Card, Text, Icon } from '@shared/ui';
+import { Icon } from '@shared/ui';
 import { MOCK_TREE, MOCK_USER } from '@shared/mocks';
 
-export const HomePage = () => {
-    return (
-        <div className="flex flex-col gap-5">
-            {/* Header */}
-            <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center text-xl">
-                        🌱
-                    </div>
-                    <div>
-                        <Text style={{ fontWeight: 700 }}>Доброе утро, {MOCK_USER.firstName}!</Text>
-                        <Text size="xs" variant="secondary">Растите своё финансовое будущее.</Text>
-                    </div>
+import { TreeDecorateCard } from './TreeDecorateCard';
+import { LearningCard } from './LearningCard';
+
+export const HomePage = () => (
+    <div className="flex flex-col gap-3 animate-fade-in-up">
+        {/* Header */}
+        <div className="flex justify-between items-start">
+            <div>
+                <div className="text-[22px] font-bold flex items-center gap-[7px]" style={{ color: 'var(--color-text-primary)' }}>
+                    Доброе утро, {MOCK_USER.firstName} <span className="text-[17px]">🌿</span>
                 </div>
-                <div className="relative">
-                    <div className="w-9 h-9 rounded-full bg-[var(--color-surface)] border border-[var(--color-border)] flex items-center justify-center">
-                        <Icon as={Bell} size={18} color="var(--color-text-secondary)" />
-                    </div>
-                    <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-[var(--color-primary)]" />
+                <div className="text-[13px] mt-[3px]" style={{ color: 'var(--color-text-secondary)' }}>
+                    Продолжай расти каждый день.
                 </div>
             </div>
-
-            {/* Tree hero */}
-            <Card shadow padding="md">
-                <TreeHero tree={MOCK_TREE} />
-            </Card>
-
-            {/* Financial growth score */}
-            <Card shadow>
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center text-lg">
-                        📈
-                    </div>
-                    <div className="flex-1">
-                        <Text size="xs" variant="secondary">Общий прогресс</Text>
-                        <Text style={{ fontWeight: 700 }}>Вы делаете большие успехи!</Text>
-                        <Text size="xs" variant="secondary">Продолжайте учиться, копить и расти.</Text>
-                    </div>
-                    <div className="text-right shrink-0">
-                        <Text style={{ fontWeight: 800, fontSize: '1.5rem', color: 'var(--color-primary)' }}>
-                            {MOCK_TREE.financialScore}%
-                        </Text>
-                        <Text size="xs" variant="secondary">Счёт роста</Text>
-                    </div>
+            <div className="relative">
+                <div className="w-9 h-9 rounded-full border flex items-center justify-center"
+                    style={{ background: 'var(--color-surface)', borderColor: '#dde8d5' }}>
+                    <Icon as={Bell} size={17} color="var(--color-text-primary)" />
                 </div>
-            </Card>
-
-            {/* Stats row */}
-            <StatsRow />
-
-            {/* Continue lesson */}
-            <Card shadow className="border border-[var(--color-border)]">
-                <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-[var(--color-primary)] flex items-center justify-center text-2xl">
-                        📖
-                    </div>
-                    <div className="flex-1">
-                        <Text size="xs" style={{ color: 'var(--color-primary)', fontWeight: 600 }}>
-                            Продолжить урок
-                        </Text>
-                        <Text style={{ fontWeight: 700 }}>Умные сбережения</Text>
-                        <Text size="xs" variant="secondary">Урок 3 из 5 · 5 мин</Text>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-[var(--color-primary)] flex items-center justify-center">
-                        <Icon as={ChevronRight} size={20} color="white" />
-                    </div>
-                </div>
-            </Card>
+                <div className="absolute top-0.5 right-0.5 w-2 h-2 rounded-full" style={{ background: 'var(--color-primary)' }} />
+            </div>
         </div>
-    );
-};
+
+        <XpCard tree={MOCK_TREE} />
+        <TreeBlock goalTitle="Накопить на поездку к морю" />
+        <StatsRow />
+        <TreeDecorateCard />
+        <LearningCard />
+    </div>
+);

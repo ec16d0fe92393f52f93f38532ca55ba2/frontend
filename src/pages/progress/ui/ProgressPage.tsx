@@ -27,7 +27,7 @@ export const ProgressPage = () => {
 
             {/* Tree with leaves */}
             <Card shadow padding="md">
-                <TreeHero tree={treeSavingsLevel} title="Ваше дерево" />
+                <TreeHero tree={treeSavingsLevel} />
                 <div className="mt-2 flex items-baseline gap-1">
                     <Text style={{ fontWeight: 800, fontSize: '1.4rem' }}>{MOCK_TREE_LEAVES}</Text>
                     <span className="text-base">🌿</span>

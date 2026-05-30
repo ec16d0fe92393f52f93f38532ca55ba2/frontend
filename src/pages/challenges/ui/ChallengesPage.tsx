@@ -24,7 +24,7 @@ export const ChallengesPage = () => {
 
             {/* Tree card */}
             <Card shadow padding="md">
-                <TreeHero tree={MOCK_TREE} title="Ваше денежное дерево" />
+                <TreeHero tree={MOCK_TREE} />
                 <div className="mt-3 p-3 rounded-[var(--radius-md)] border border-[var(--color-border)] flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-[var(--color-primary-light)] flex items-center justify-center text-base">
                         🌿

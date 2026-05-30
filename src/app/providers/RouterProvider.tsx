@@ -1,33 +1,37 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
-import { LoginPage, RegisterPage, HomePage, LearnPage, ChallengesPage, ProgressPage, ProfilePage } from '@pages';
+import {
+    LoginPage, RegisterPage,
+    HomePage, ProfilePage, DreamPage, CameraPage, ChatPage,
+    LearnPage, ChallengesPage,
+    AnalyticsPage, SettingsPage, MarketPage,
+    ExpenseEntryPage, IncomeEntryPage,
+} from '@pages';
 
 import { AppLayout } from '@widgets/app-layout';
 
+import { ProtectedRoute } from './ProtectedRoute';
 import { PublicOnlyRoute } from './PublicOnlyRoute';
 
 export const router = createBrowserRouter([
     {
-        element: <AppLayout />,
+        element: <ProtectedRoute />,
         children: [
             {
-                index: true,
-                element: <HomePage />,
-            },
-            {
-                path: '/learn',
-                element: <LearnPage />,
-            },
-            {
-                path: '/challenges',
-                element: <ChallengesPage />,
-            },
-            {
-                path: '/progress',
-                element: <ProgressPage />,
-            },
-            {
-                path: '/profile',
-                element: <ProfilePage />,
+                element: <AppLayout />,
+                children: [
+                    { index: true, element: <HomePage /> },
+                    { path: '/dream', element: <DreamPage /> },
+                    { path: '/camera', element: <CameraPage /> },
+                    { path: '/chat', element: <ChatPage /> },
+                    { path: '/profile', element: <ProfilePage /> },
+                    { path: '/learn', element: <LearnPage /> },
+                    { path: '/challenges', element: <ChallengesPage /> },
+                    { path: '/analytics', element: <AnalyticsPage /> },
+                    { path: '/settings', element: <SettingsPage /> },
+                    { path: '/market', element: <MarketPage /> },
+                    { path: '/expense', element: <ExpenseEntryPage /> },
+                    { path: '/income', element: <IncomeEntryPage /> },
+                ],
             },
         ],
     },
@@ -37,18 +41,9 @@ export const router = createBrowserRouter([
             {
                 path: '/auth',
                 children: [
-                    {
-                        index: true,
-                        loader: async () => redirect('/auth/login'),
-                    },
-                    {
-                        path: 'login',
-                        element: <LoginPage />,
-                    },
-                    {
-                        path: 'register',
-                        element: <RegisterPage />,
-                    },
+                    { index: true, loader: async () => redirect('/auth/login') },
+                    { path: 'login', element: <LoginPage /> },
+                    { path: 'register', element: <RegisterPage /> },
                 ],
             },
         ],
