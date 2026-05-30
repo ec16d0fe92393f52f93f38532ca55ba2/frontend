@@ -74,6 +74,12 @@
       ],
       "@entities/*": [
         "src/entities/*"
+      ],
+      "@store": [
+        "src/shared/store/"
+      ],
+      "@store/*": [
+        "src/shared/store/*"
       ]
     }
   },

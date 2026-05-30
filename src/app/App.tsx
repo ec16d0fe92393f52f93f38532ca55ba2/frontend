@@ -1,12 +1,12 @@
+import { RouterProvider } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { RouterProvider } from 'react-router-dom';
-import { router } from '@app/providers';
 
+import { AuthProvider, router } from '@app/providers';
 
 export const App = () => {
     return (
-        <div>
+        <AuthProvider>
             <ToastContainer
                 style={{ zIndex: 10000000 }}
                 position="top-center"
@@ -20,6 +20,6 @@ export const App = () => {
                 pauseOnHover
             />
             <RouterProvider router={router} />
-        </div>
+        </AuthProvider>
     );
 };

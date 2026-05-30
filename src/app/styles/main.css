@@ -1,1 +1,79 @@
 @import "tailwindcss";
+
+@theme {
+    /* ── Background & Surface ── */
+    --color-bg: #F5FBF5;
+    --color-surface: #FFFFFF;
+
+    /* ── Primary (green) ── */
+    --color-primary: #3D7D3F;
+    --color-primary-light: #EAF4EA;
+    --color-primary-dark: #2A5C2C;
+    --color-primary-foreground: #FFFFFF;
+
+    /* ── Text ── */
+    --color-text-primary: #1C2B1C;
+    --color-text-secondary: #6B816B;
+    --color-text-muted: #9BA89B;
+
+    /* ── Accents ── */
+    --color-accent: #FF6B35;
+    --color-success: #56B757;
+    --color-border: #D8EBD8;
+
+    /* ── Typography ── */
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+    /* ── Border radius ── */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 24px;
+
+    /* ── Container ── */
+    --container-max: 480px;
+}
+
+/* ── Dark theme ── */
+[data-theme='dark'] {
+    --color-bg: #0F1A0F;
+    --color-surface: #1C2B1C;
+    --color-primary: #56B757;
+    --color-primary-light: #1C2B1C;
+    --color-primary-dark: #6DD76F;
+    --color-primary-foreground: #0F1A0F;
+    --color-text-primary: #E8F5E8;
+    --color-text-secondary: #8FAF8F;
+    --color-text-muted: #5A705A;
+    --color-accent: #FF8C5A;
+    --color-success: #6DD76F;
+    --color-border: #2D4A2D;
+}
+
+/* ── Base ── */
+html {
+    -webkit-text-size-adjust: 100%;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-text-primary);
+    font-family: var(--font-sans);
+    overscroll-behavior-y: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* ── Safe area insets (notched devices) ── */
+:root {
+    --safe-top: env(safe-area-inset-top, 0px);
+    --safe-bottom: env(safe-area-inset-bottom, 0px);
+    --safe-left: env(safe-area-inset-left, 0px);
+    --safe-right: env(safe-area-inset-right, 0px);
+}
+
+/* ── Prevent iOS zoom on input focus ── */
+input,
+textarea,
+select {
+    font-size: 16px;
+}

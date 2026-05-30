@@ -1,8 +1,10 @@
 import ReactDOM from 'react-dom/client';
-import '@styles/main.css';
-import { App } from '@app/App.tsx';
 import { Provider } from 'react-redux';
-import { store } from '@shared/lib/store/store.ts';
+
+import { App } from '@app/App.tsx';
+
+import { store } from '@shared/store/store';
+import '@styles/main.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
