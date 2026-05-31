@@ -21,6 +21,7 @@ export interface Milestone {
 }
 
 export interface Goal {
+    id: string;
     title: string;
     current: number;
     target: number;
@@ -34,6 +35,7 @@ interface GoalState {
 
 const initialState: GoalState = {
     goal: {
+        id: '',
         title: 'Поездка к морю',
         current: 24000,
         target: 80000,
@@ -74,6 +76,9 @@ export const goalSlice = createSlice({
         setGoal: (state, action: PayloadAction<Goal>) => {
             state.goal = action.payload;
         },
+        setMilestones: (state, action: PayloadAction<Milestone[]>) => {
+            state.milestones = action.payload;
+        },
         toggleSubtask: (state, action: PayloadAction<{ milestoneId: string; subtaskId: string }>) => {
             const { milestoneId, subtaskId } = action.payload;
             const milestone = state.milestones.find((m) => m.id === milestoneId);
@@ -102,7 +107,7 @@ export const goalSlice = createSlice({
     },
 });
 
-export const { setGoal, toggleSubtask, setMilestoneCompletedUpTo } = goalSlice.actions;
+export const { setGoal, setMilestones, toggleSubtask, setMilestoneCompletedUpTo } = goalSlice.actions;
 export const selectGoal = (state: RootState) => state.goal.goal;
 export const selectMilestones = (state: RootState) => state.goal.milestones;
 export const selectCompletedMilestoneCount = (state: RootState) =>

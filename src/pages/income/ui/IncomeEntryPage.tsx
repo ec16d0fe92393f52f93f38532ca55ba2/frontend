@@ -5,11 +5,10 @@ import { toast } from 'react-toastify';
 
 import { CategoryGrid } from '@widgets/category-grid';
 
-import { addTransaction } from '@entities/transaction';
+import { useCreateTransactionMutation, useGetIncomeCategoriesQuery } from '@entities/transaction';
 import { selectBalance, setBalance } from '@entities/balance';
 
 import { Tabs, FloatingInput, Icon, DateSelector, AmountInput, type DateOption } from '@shared/ui';
-import { MOCK_CATEGORIES_INCOME } from '@shared/mocks';
 import { useAppDispatch, useAppSelector } from '@shared/hooks';
 
 type EntryTab = 'expense' | 'income';
@@ -20,6 +19,9 @@ export const IncomeEntryPage = () => {
     const dispatch = useAppDispatch();
     const balance = useAppSelector(selectBalance);
 
+    const { data: categories = [] } = useGetIncomeCategoriesQuery();
+    const [createTransaction, { isLoading }] = useCreateTransactionMutation();
+
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
     const [date, setDate] = useState<DateOption>('Сегодня');
@@ -28,27 +30,36 @@ export const IncomeEntryPage = () => {
 
     const canSubmit = Number(amount) > 0 && category !== '';
 
-    const handleSubmit = () => {
+    const toISO = (opt: DateOption): string => {
+        const d = new Date();
+        if (opt === 'Вчера') d.setDate(d.getDate() - 1);
+        if (opt === 'Позавчера') d.setDate(d.getDate() - 2);
+        return d.toISOString();
+    };
+
+    const handleSubmit = async () => {
         if (!canSubmit) return;
         const num = Number(amount);
-        const categoryLabel = MOCK_CATEGORIES_INCOME.find((c) => c.id === category)?.label ?? category;
-        const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+        const categoryLabel = categories.find((c) => c.id === category)?.label ?? category;
 
-        dispatch(addTransaction({
-            id: Date.now().toString(),
-            title: categoryLabel,
-            amount: num,
-            category,
-            date: `${date}, ${time}`,
-            type: 'income',
-        }));
-        dispatch(setBalance({
-            ...balance,
-            total: balance.total + num,
-            income: balance.income + num,
-        }));
-        toast.success('Доход добавлен');
-        navigate(-1);
+        try {
+            await createTransaction({
+                title: categoryLabel,
+                amount: num,
+                category,
+                type: 'income',
+                date: toISO(date),
+            }).unwrap();
+            dispatch(setBalance({
+                ...balance,
+                total: balance.total + num,
+                income: balance.income + num,
+            }));
+            toast.success('Доход добавлен');
+            navigate(-1);
+        } catch {
+            toast.error('Ошибка добавления дохода');
+        }
     };
 
     return (
@@ -63,12 +74,12 @@ export const IncomeEntryPage = () => {
             <Tabs tabs={TABS} active="income" onChange={handleTabChange} />
             <AmountInput variant="income" value={amount} onChange={setAmount} />
             <DateSelector value={date} onChange={setDate} />
-            <CategoryGrid categories={MOCK_CATEGORIES_INCOME} selected={category} onSelect={setCategory} />
+            <CategoryGrid categories={categories} selected={category} onSelect={setCategory} />
             <FloatingInput label="Комментарий (необязательно)" />
             <button
                 type="button"
-                onClick={handleSubmit}
-                disabled={!canSubmit}
+                onClick={() => void handleSubmit()}
+                disabled={!canSubmit || isLoading}
                 className="btn-press w-full py-4 rounded-[16px] text-[15px] font-bold text-white transition-opacity"
                 style={{ background: canSubmit ? 'var(--color-primary)' : 'var(--color-border)', opacity: canSubmit ? 1 : 0.6 }}>
                 Добавить доход

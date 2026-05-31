@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { setGoal } from '@entities/goal';
+import { useCreateGoalMutation } from '@entities/goal';
 
 import { FloatingInput, Icon } from '@shared/ui';
-import { useAppDispatch } from '@shared/hooks';
 
 const GOAL_EMOJIS = ['🌊', '✈️', '🏡', '🚗', '💻', '📱', '🎓', '💍', '🏖️', '🎸', '💰', '🌍'];
 
@@ -17,7 +16,7 @@ const YEARS = [currentYear, currentYear + 1, currentYear + 2];
 
 export const DreamCreatePage = () => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
+    const [createGoal, { isLoading }] = useCreateGoalMutation();
     const [emoji, setEmoji] = useState('🌊');
     const [title, setTitle] = useState('');
     const [target, setTarget] = useState('');
@@ -26,11 +25,19 @@ export const DreamCreatePage = () => {
 
     const canSubmit = title.trim().length > 0 && Number(target) > 0;
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (!canSubmit) return;
-        dispatch(setGoal({ title, target: Number(target), current: 0, deadline: `${MONTHS[month]} ${year}` }));
-        toast.success('Мечта создана 🌱');
-        navigate('/dream');
+        try {
+            await createGoal({
+                title,
+                target: Number(target),
+                deadline: new Date(year, month, 1).toISOString().split('T')[0],
+            }).unwrap();
+            toast.success('Мечта создана 🌱');
+            navigate('/dream');
+        } catch {
+            toast.error('Ошибка создания мечты');
+        }
     };
 
     return (
@@ -139,8 +146,8 @@ export const DreamCreatePage = () => {
             {/* Submit */}
             <button
                 type="button"
-                disabled={!canSubmit}
-                onClick={handleSubmit}
+                disabled={!canSubmit || isLoading}
+                onClick={() => void handleSubmit()}
                 className="btn-press w-full py-4 rounded-[16px] text-[15px] font-bold text-white transition-opacity"
                 style={{
                     background: 'var(--color-primary)',

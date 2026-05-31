@@ -2,24 +2,28 @@ import { useState } from 'react';
 import { User } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { selectUser, updateProfile } from '@entities/user';
+import { selectUser, useUpdateMeMutation } from '@entities/user';
 
 import { Icon, FloatingInput } from '@shared/ui';
-import { useAppDispatch, useAppSelector } from '@shared/hooks';
+import { useAppSelector } from '@shared/hooks';
 
 export const ProfileSection = () => {
-    const dispatch = useAppDispatch();
     const user = useAppSelector(selectUser);
+    const [updateMe, { isLoading }] = useUpdateMeMutation();
 
     const [name, setName] = useState(user ? `${user.firstname} ${user.lastname}` : '');
     const [email, setEmail] = useState(user?.email ?? '');
 
-    const handleSave = () => {
+    const handleSave = async () => {
         const parts = name.trim().split(' ');
         const firstname = parts[0] ?? '';
         const lastname = parts.slice(1).join(' ') || firstname;
-        dispatch(updateProfile({ firstname, lastname, email }));
-        toast.success('Профиль обновлён');
+        try {
+            await updateMe({ firstname, lastname, email }).unwrap();
+            toast.success('Профиль обновлён');
+        } catch {
+            toast.error('Ошибка сохранения');
+        }
     };
 
     return (
@@ -37,9 +41,13 @@ export const ProfileSection = () => {
             </div>
             <FloatingInput label="Имя" value={name} onChange={(e) => setName(e.target.value)} />
             <FloatingInput label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            <FloatingInput label="Название приложения" defaultValue="Voronka" />
-            <button type="button" onClick={handleSave} className="btn-press w-full py-3 rounded-[14px] text-[14px] font-semibold text-white"
-                style={{ background: 'var(--color-primary)' }}>
+            <button
+                type="button"
+                onClick={() => void handleSave()}
+                disabled={isLoading}
+                className="btn-press w-full py-3 rounded-[14px] text-[14px] font-semibold text-white"
+                style={{ background: 'var(--color-primary)', opacity: isLoading ? 0.6 : 1 }}
+            >
                 Сохранить
             </button>
         </div>

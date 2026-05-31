@@ -5,11 +5,10 @@ import { toast } from 'react-toastify';
 
 import { CategoryGrid } from '@widgets/category-grid';
 
-import { addTransaction, selectTransactions } from '@entities/transaction';
+import { useCreateTransactionMutation, useGetExpenseCategoriesQuery } from '@entities/transaction';
 import { selectBalance, setBalance } from '@entities/balance';
 
 import { Tabs, FloatingInput, Icon, DateSelector, AmountInput, type DateOption } from '@shared/ui';
-import { MOCK_CATEGORIES_EXPENSE } from '@shared/mocks';
 import { useAppDispatch, useAppSelector } from '@shared/hooks';
 
 type EntryTab = 'expense' | 'income';
@@ -19,7 +18,9 @@ export const ExpenseEntryPage = () => {
     const navigate = useNavigate();
     const dispatch = useAppDispatch();
     const balance = useAppSelector(selectBalance);
-    const transactions = useAppSelector(selectTransactions);
+
+    const { data: categories = [] } = useGetExpenseCategoriesQuery();
+    const [createTransaction, { isLoading }] = useCreateTransactionMutation();
 
     const [category, setCategory] = useState('');
     const [amount, setAmount] = useState('');
@@ -29,30 +30,37 @@ export const ExpenseEntryPage = () => {
 
     const canSubmit = Number(amount) > 0 && category !== '';
 
-    const handleSubmit = () => {
-        if (!canSubmit) return;
-        const num = Number(amount);
-        const categoryLabel = MOCK_CATEGORIES_EXPENSE.find((c) => c.id === category)?.label ?? category;
-        const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
-
-        dispatch(addTransaction({
-            id: Date.now().toString(),
-            title: categoryLabel,
-            amount: -num,
-            category,
-            date: `${date}, ${time}`,
-            type: 'expense',
-        }));
-        dispatch(setBalance({
-            ...balance,
-            total: balance.total - num,
-            expenses: balance.expenses + num,
-        }));
-        toast.success('Расход добавлен');
-        navigate(-1);
+    const toISO = (opt: DateOption): string => {
+        const d = new Date();
+        if (opt === 'Вчера') d.setDate(d.getDate() - 1);
+        if (opt === 'Позавчера') d.setDate(d.getDate() - 2);
+        return d.toISOString();
     };
 
-    void transactions;
+    const handleSubmit = async () => {
+        if (!canSubmit) return;
+        const num = Number(amount);
+        const categoryLabel = categories.find((c) => c.id === category)?.label ?? category;
+
+        try {
+            await createTransaction({
+                title: categoryLabel,
+                amount: -num,
+                category,
+                type: 'expense',
+                date: toISO(date),
+            }).unwrap();
+            dispatch(setBalance({
+                ...balance,
+                total: balance.total - num,
+                expenses: balance.expenses + num,
+            }));
+            toast.success('Расход добавлен');
+            navigate(-1);
+        } catch {
+            toast.error('Ошибка добавления расхода');
+        }
+    };
 
     return (
         <div className="flex flex-col gap-4 animate-fade-in-up">
@@ -66,12 +74,12 @@ export const ExpenseEntryPage = () => {
             <Tabs tabs={TABS} active="expense" onChange={handleTabChange} variant="expense" />
             <AmountInput variant="expense" value={amount} onChange={setAmount} />
             <DateSelector activeColor="var(--color-expense)" value={date} onChange={setDate} />
-            <CategoryGrid categories={MOCK_CATEGORIES_EXPENSE} selected={category} onSelect={setCategory} />
+            <CategoryGrid categories={categories} selected={category} onSelect={setCategory} />
             <FloatingInput label="Комментарий (необязательно)" />
             <button
                 type="button"
-                onClick={handleSubmit}
-                disabled={!canSubmit}
+                onClick={() => void handleSubmit()}
+                disabled={!canSubmit || isLoading}
                 className="btn-press w-full py-4 rounded-[16px] text-[15px] font-bold text-white transition-opacity"
                 style={{ background: canSubmit ? 'var(--color-expense)' : 'var(--color-border)', opacity: canSubmit ? 1 : 0.6 }}>
                 Добавить расход

@@ -9,7 +9,6 @@ interface MilestoneStepProps {
     milestone: Milestone;
     isLast: boolean;
     onToggleSubtask?: (subtaskId: string) => void;
-    onToggleStatus?: () => void;
 }
 
 const statusIcon = (status: Milestone['status']) => {
@@ -24,21 +23,24 @@ const dotBg = (status: Milestone['status']) => {
     return 'var(--color-border)';
 };
 
-export const MilestoneStep = ({ milestone, isLast, onToggleSubtask, onToggleStatus }: MilestoneStepProps) => {
+export const MilestoneStep = ({ milestone, isLast, onToggleSubtask }: MilestoneStepProps) => {
     const isLocked = milestone.status === 'locked';
     const hasSubtasks = milestone.subtasks && milestone.subtasks.length > 0;
     const [isOpen, setIsOpen] = useState(milestone.status === 'current');
+
+    const doneCount = milestone.subtasks?.filter((t) => t.done).length ?? 0;
+    const totalCount = milestone.subtasks?.length ?? 0;
+    const progressPct = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+    const showProgress = hasSubtasks && milestone.status !== 'locked';
 
     return (
         <div className="flex gap-3">
             {/* Vine */}
             <div className="flex flex-col items-center">
-                <button type="button" onClick={onToggleStatus} className="btn-press shrink-0">
-                    <div className="w-[30px] h-[30px] rounded-full flex items-center justify-center border-2"
-                        style={{ background: dotBg(milestone.status), borderColor: dotBg(milestone.status), color: '#fff' }}>
-                        {statusIcon(milestone.status)}
-                    </div>
-                </button>
+                <div className="shrink-0 w-[30px] h-[30px] rounded-full flex items-center justify-center border-2"
+                    style={{ background: dotBg(milestone.status), borderColor: dotBg(milestone.status), color: '#fff' }}>
+                    {statusIcon(milestone.status)}
+                </div>
                 {!isLast && <div className="w-[2px] flex-1 mt-1 mb-1 rounded-full" style={{ background: 'var(--color-border)', minHeight: 20 }} />}
             </div>
 
@@ -51,7 +53,7 @@ export const MilestoneStep = ({ milestone, isLast, onToggleSubtask, onToggleStat
                         opacity: isLocked ? 0.6 : 1,
                     }}>
 
-                    {/* Header — clickable only if has subtasks */}
+                    {/* Header */}
                     <button
                         type="button"
                         disabled={isLocked || !hasSubtasks}
@@ -79,11 +81,31 @@ export const MilestoneStep = ({ milestone, isLast, onToggleSubtask, onToggleStat
                         <div className="text-[11px] mt-0.5" style={{ color: 'var(--color-text-secondary)' }}>
                             {milestone.description} · {milestone.date}
                         </div>
+
+                        {/* Daily progress bar */}
+                        {showProgress && (
+                            <div className="mt-[8px]">
+                                <div className="flex justify-between items-center mb-[4px]">
+                                    <span className="text-[10px]" style={{ color: 'var(--color-text-muted)' }}>
+                                        Ежедневные задачи
+                                    </span>
+                                    <span className="text-[10px] font-semibold" style={{ color: 'var(--color-primary)' }}>
+                                        {doneCount}/{totalCount}
+                                    </span>
+                                </div>
+                                <div className="h-[5px] rounded-full overflow-hidden" style={{ background: 'var(--color-border)' }}>
+                                    <div
+                                        className="h-full rounded-full transition-all duration-300"
+                                        style={{ width: `${progressPct}%`, background: 'var(--color-primary)' }}
+                                    />
+                                </div>
+                            </div>
+                        )}
                     </button>
 
                     {/* Subtasks */}
                     {hasSubtasks && isOpen && (
-                        <div className="px-[14px] pb-[12px] flex flex-col gap-[6px]"
+                        <div className="px-[14px] pb-[12px]"
                             style={{ borderTop: '1px solid var(--color-border)' }}>
                             <div className="pt-[10px] flex flex-col gap-[6px]">
                                 {milestone.subtasks!.map((t) => (
@@ -97,7 +119,8 @@ export const MilestoneStep = ({ milestone, isLast, onToggleSubtask, onToggleStat
                                             style={{ borderColor: t.done ? 'var(--color-primary)' : 'var(--color-border)', background: t.done ? 'var(--color-primary)' : 'transparent' }}>
                                             {t.done && <span style={{ color: '#fff', fontSize: 9 }}>✓</span>}
                                         </div>
-                                        <span className="text-[11px] transition-colors" style={{ color: t.done ? 'var(--color-text-muted)' : 'var(--color-text-primary)', textDecoration: t.done ? 'line-through' : 'none' }}>
+                                        <span className="text-[11px] transition-colors"
+                                            style={{ color: t.done ? 'var(--color-text-muted)' : 'var(--color-text-primary)', textDecoration: t.done ? 'line-through' : 'none' }}>
                                             {t.text}
                                         </span>
                                     </button>

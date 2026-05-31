@@ -4,9 +4,9 @@ import { ArrowLeft } from 'lucide-react';
 
 import { SkinCard } from '@widgets/market-grid';
 
-import { selectMarketItems } from '@entities/market';
+import { selectMarketItems, type MarketCategory, type MarketItem } from '@entities/market';
 
-import { CATEGORIES, MARKET_FILTERS, type MarketCategory, type MarketFilter, type MarketItem } from '@shared/mocks';
+import { CATEGORIES, MARKET_FILTERS, type MarketFilter } from '@shared/mocks';
 import { Icon } from '@shared/ui';
 import { useAppSelector } from '@shared/hooks';
 

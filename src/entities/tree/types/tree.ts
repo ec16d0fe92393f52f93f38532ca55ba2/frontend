@@ -6,4 +6,5 @@ export interface TreeLevel {
     xpTotal: number;
     growthPoints: number;
     financialScore: number;
+    microstepPercent: number;
 }

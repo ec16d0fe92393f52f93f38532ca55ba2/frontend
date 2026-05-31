@@ -1,12 +1,16 @@
-import { selectMilestones, toggleSubtask, setMilestoneCompletedUpTo } from '@entities/goal';
+import { selectMilestones, useToggleSubtaskApiMutation } from '@entities/goal';
 
-import { useAppDispatch, useAppSelector } from '@shared/hooks';
+import { useAppSelector } from '@shared/hooks';
 
 import { MilestoneStep } from './MilestoneStep';
 
-export const DreamMilestones = () => {
-    const dispatch = useAppDispatch();
+interface DreamMilestonesProps {
+    goalId: string | undefined;
+}
+
+export const DreamMilestones = ({ goalId }: DreamMilestonesProps) => {
     const milestones = useAppSelector(selectMilestones);
+    const [toggleSubtaskApi] = useToggleSubtaskApiMutation();
 
     return (
         <div className="flex flex-col">
@@ -15,8 +19,11 @@ export const DreamMilestones = () => {
                     key={m.id}
                     milestone={m}
                     isLast={i === milestones.length - 1}
-                    onToggleSubtask={(subtaskId) => dispatch(toggleSubtask({ milestoneId: m.id, subtaskId }))}
-                    onToggleStatus={() => dispatch(setMilestoneCompletedUpTo(m.id))}
+                    onToggleSubtask={(subtaskId) => {
+                        if (!goalId) return;
+                        const subtask = m.subtasks?.find((t) => t.id === subtaskId);
+                        void toggleSubtaskApi({ goalId, milestoneId: m.id, subtaskId, body: { done: !subtask?.done } });
+                    }}
                 />
             ))}
         </div>

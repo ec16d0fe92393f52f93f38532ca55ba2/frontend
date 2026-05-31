@@ -8,9 +8,18 @@ const PAD = 12;
 
 export const XpProgressChart = () => {
     const xpHistory = useAppSelector(selectXpHistory);
-    const maxVal = Math.max(...xpHistory.map((d) => d.value));
+
+    if (xpHistory.length === 0) {
+        return (
+            <div className="rounded-[18px] p-[14px_16px] border h-[130px] animate-pulse"
+                style={{ background: 'var(--color-surface)', borderColor: 'var(--color-border)' }} />
+        );
+    }
+
+    const maxVal = Math.max(...xpHistory.map((d) => d.value)) || 1;
+    const span = xpHistory.length > 1 ? xpHistory.length - 1 : 1;
     const pts = xpHistory.map((d, i) => {
-        const x = PAD + (i / (xpHistory.length - 1)) * (W - PAD * 2);
+        const x = PAD + (i / span) * (W - PAD * 2);
         const y = H - PAD - ((d.value / maxVal) * (H - PAD * 2));
         return { x, y, ...d };
     });

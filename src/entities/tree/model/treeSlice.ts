@@ -30,6 +30,7 @@ const initialState: TreeState = {
         xpTotal: 1500,
         growthPoints: 12,
         financialScore: 72,
+        microstepPercent: 0,
     },
     skills: [
         { label: 'Сбережения', value: 8, color: 'primary' },

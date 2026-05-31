@@ -44,8 +44,22 @@ export const challengesSlice = createSlice({
     initialState,
     reducers: {
         setChallenges: (_state, action: PayloadAction<ChallengesState>) => action.payload,
+        setDailyChallenges: (state, action: PayloadAction<Challenge[]>) => {
+            state.daily = action.payload;
+        },
+        setWeeklyChallenge: (state, action: PayloadAction<Challenge>) => {
+            state.weekly = action.payload;
+        },
+        setAchievements: (state, action: PayloadAction<Achievement[]>) => {
+            state.achievements = action.payload;
+        },
+        setStreakInfo: (state, action: PayloadAction<{ streakDays: number; resetHours: number; resetMinutes: number }>) => {
+            state.streakDays = action.payload.streakDays;
+            state.resetHours = action.payload.resetHours;
+            state.resetMinutes = action.payload.resetMinutes;
+        },
     },
 });
 
-export const { setChallenges } = challengesSlice.actions;
+export const { setChallenges, setDailyChallenges, setWeeklyChallenge, setAchievements, setStreakInfo } = challengesSlice.actions;
 export const selectChallenges = (state: RootState) => state.challenges;

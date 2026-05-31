@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Settings, User } from 'lucide-react';
 
+import { selectTree } from '@entities/tree';
 import { selectUser } from '@entities/user';
 
 import { Icon } from '@shared/ui';
@@ -9,6 +10,7 @@ import { useAppSelector } from '@shared/hooks';
 export const ProfileHeader = () => {
     const navigate = useNavigate();
     const user = useAppSelector(selectUser);
+    const tree = useAppSelector(selectTree);
     const fullName = user ? `${user.firstname} ${user.lastname}` : 'Пользователь';
 
     return (
@@ -25,7 +27,7 @@ export const ProfileHeader = () => {
                     <div className="flex items-center gap-[5px] mt-[2px]">
                         <div className="w-[7px] h-[7px] rounded-full" style={{ background: 'var(--color-primary)' }} />
                         <span className="text-[12px] font-medium" style={{ color: 'var(--color-primary)' }}>
-                            Уровень 6 · Растущий разум
+                            Уровень {tree.level} · {tree.label}
                         </span>
                     </div>
                 </div>

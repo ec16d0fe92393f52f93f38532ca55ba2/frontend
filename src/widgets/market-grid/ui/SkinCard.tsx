@@ -1,32 +1,36 @@
 import { toast } from 'react-toastify';
 
-import { buyItem, equipItem } from '@entities/market';
-
-import type { MarketItem } from '@shared/mocks';
-import { useAppDispatch } from '@shared/hooks';
+import { useBuyItemMutation, useEquipItemMutation, type MarketItem } from '@entities/market';
 
 interface SkinCardProps {
     item: MarketItem;
 }
 
 export const SkinCard = ({ item }: SkinCardProps) => {
-    const dispatch = useAppDispatch();
+    const [buyItem, { isLoading: isBuying }] = useBuyItemMutation();
+    const [equipItem, { isLoading: isEquipping }] = useEquipItemMutation();
+
     const isGem = item.currency === 'gem';
     const isEquipped = item.owned && item.active;
+    const isDisabled = isEquipped || isBuying || isEquipping;
     const costLabel = item.owned
         ? (item.active ? 'Надето' : 'Одеть')
         : isGem ? `${item.cost} 💎` : `${item.cost} XP`;
     const costBg = item.owned ? 'var(--color-primary-light)' : isGem ? '#fdf3c0' : 'var(--color-primary-light)';
     const costColor = item.owned ? 'var(--color-primary)' : isGem ? 'var(--color-gold)' : 'var(--color-primary)';
 
-    const handlePress = () => {
-        if (isEquipped) return;
-        if (item.owned && !item.active) {
-            dispatch(equipItem(item.id));
-            toast.success(`${item.name} надет`);
-        } else if (!item.owned) {
-            dispatch(buyItem(item.id));
-            toast.success(`${item.name} куплен`);
+    const handlePress = async () => {
+        if (isDisabled) return;
+        try {
+            if (item.owned && !item.active) {
+                await equipItem(item.id).unwrap();
+                toast.success(`${item.name} надет`);
+            } else if (!item.owned) {
+                await buyItem(item.id).unwrap();
+                toast.success(`${item.name} куплен`);
+            }
+        } catch {
+            toast.error('Ошибка');
         }
     };
 
@@ -68,8 +72,8 @@ export const SkinCard = ({ item }: SkinCardProps) => {
                 <div className="text-[10px]" style={{ color: 'var(--color-text-muted)' }}>{item.description}</div>
                 <button
                     type="button"
-                    onClick={handlePress}
-                    disabled={isEquipped}
+                    onClick={() => void handlePress()}
+                    disabled={isDisabled}
                     className="w-full text-[11px] font-semibold py-1.5 rounded-[10px] mt-1"
                     style={{ background: costBg, color: costColor, opacity: isEquipped ? 0.7 : 1 }}
                 >

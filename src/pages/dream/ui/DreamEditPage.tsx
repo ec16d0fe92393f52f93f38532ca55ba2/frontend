@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { toast } from 'react-toastify';
 
-import { selectGoal, setGoal } from '@entities/goal';
+import { useGetGoalsQuery, useUpdateGoalMutation } from '@entities/goal';
 
 import { FloatingInput, Icon } from '@shared/ui';
-import { useAppDispatch, useAppSelector } from '@shared/hooks';
 
 const GOAL_EMOJIS = ['🌊', '✈️', '🏡', '🚗', '💻', '📱', '🎓', '💍', '🏖️', '🎸', '💰', '🌍'];
 
@@ -17,21 +16,30 @@ const YEARS = [currentYear, currentYear + 1, currentYear + 2];
 
 export const DreamEditPage = () => {
     const navigate = useNavigate();
-    const dispatch = useAppDispatch();
-    const goal = useAppSelector(selectGoal);
+    const { data: goals } = useGetGoalsQuery();
+    const goal = goals?.[0];
+    const [updateGoal, { isLoading }] = useUpdateGoalMutation();
+
     const [emoji, setEmoji] = useState('🌊');
-    const [title, setTitle] = useState(goal.title);
-    const [target, setTarget] = useState(String(goal.target));
+    const [title, setTitle] = useState(goal?.title ?? '');
+    const [target, setTarget] = useState(String(goal?.target ?? ''));
     const [year, setYear] = useState(currentYear + 1);
     const [month, setMonth] = useState(8);
 
     const canSubmit = title.trim().length > 0 && Number(target) > 0;
 
-    const handleSubmit = () => {
-        if (!canSubmit) return;
-        dispatch(setGoal({ title, target: Number(target), current: goal.current, deadline: `${MONTHS[month]} ${year}` }));
-        toast.success('Мечта обновлена');
-        navigate('/dream');
+    const handleSubmit = async () => {
+        if (!canSubmit || !goal?.id) return;
+        try {
+            await updateGoal({
+                goalId: goal.id,
+                body: { title, target: Number(target), deadline: new Date(year, month, 1).toISOString().split('T')[0] },
+            }).unwrap();
+            toast.success('Мечта обновлена');
+            navigate('/dream');
+        } catch {
+            toast.error('Ошибка сохранения');
+        }
     };
 
     return (
@@ -140,8 +148,8 @@ export const DreamEditPage = () => {
             {/* Submit */}
             <button
                 type="button"
-                disabled={!canSubmit}
-                onClick={handleSubmit}
+                disabled={!canSubmit || isLoading}
+                onClick={() => void handleSubmit()}
                 className="btn-press w-full py-4 rounded-[16px] text-[15px] font-bold text-white transition-opacity"
                 style={{
                     background: 'var(--color-primary)',

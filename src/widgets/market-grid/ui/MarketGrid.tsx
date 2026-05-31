@@ -1,8 +1,8 @@
 import { Link } from 'react-router-dom';
 
-import { selectMarketItems } from '@entities/market';
+import { selectMarketItems, type MarketItem } from '@entities/market';
 
-import { CATEGORIES, type MarketFilter, type MarketItem } from '@shared/mocks';
+import { CATEGORIES, type MarketFilter } from '@shared/mocks';
 import { useAppSelector } from '@shared/hooks';
 
 import { SkinCard } from './SkinCard';

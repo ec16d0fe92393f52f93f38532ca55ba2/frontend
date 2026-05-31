@@ -5,6 +5,8 @@ import { removeUser, setUser, useGetMeQuery } from '@entities/user';
 import { useAppDispatch } from '@shared/hooks/useAppDispatch';
 import { Spinner } from '@shared/ui/Spinner';
 
+import { useAppBootstrap } from '../hooks/useAppBootstrap';
+
 interface AuthProviderProps {
     children: ReactNode;
 }
@@ -13,6 +15,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const hasToken = Boolean(localStorage.getItem('accessToken'));
     const { data, isError, isLoading, isUninitialized } = useGetMeQuery(null, { skip: !hasToken });
     const dispatch = useAppDispatch();
+    const isAuthenticated = Boolean(data);
+    useAppBootstrap(!isAuthenticated);
 
     useEffect(() => {
         if (data) {
