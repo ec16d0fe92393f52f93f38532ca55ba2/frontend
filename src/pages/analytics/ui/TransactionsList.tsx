@@ -1,16 +1,17 @@
 import { useState } from 'react';
 
-import { TransactionItem } from '@entities/transaction';
+import { TransactionItem, selectTransactions } from '@entities/transaction';
 
-import { MOCK_TRANSACTIONS } from '@shared/mocks';
+import { useAppSelector } from '@shared/hooks';
 
 const FILTERS = ['Все', 'Доходы', 'Расходы'] as const;
 type Filter = typeof FILTERS[number];
 
 export const TransactionsList = () => {
     const [filter, setFilter] = useState<Filter>('Все');
+    const transactions = useAppSelector(selectTransactions);
 
-    const filtered = MOCK_TRANSACTIONS.filter((t) => {
+    const filtered = transactions.filter((t) => {
         if (filter === 'Доходы') return t.type === 'income';
         if (filter === 'Расходы') return t.type === 'expense';
         return true;

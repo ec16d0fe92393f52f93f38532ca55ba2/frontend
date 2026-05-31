@@ -2,9 +2,10 @@ import { TreeDisplay } from '@entities/tree';
 
 interface TreeBlockProps {
     goalTitle?: string;
+    completedMilestones?: number;
 }
 
-export const TreeBlock = ({ goalTitle = 'Накопить на поездку к морю' }: TreeBlockProps) => (
+export const TreeBlock = ({ goalTitle = 'Накопить на поездку к морю', completedMilestones }: TreeBlockProps) => (
     <div className="rounded-[24px] p-[20px_18px_18px] text-center relative overflow-hidden"
         style={{ background: '#F2F7F0' }}>
         {/* Decorative leaves */}
@@ -21,7 +22,7 @@ export const TreeBlock = ({ goalTitle = 'Накопить на поездку к
             <path d="M8.5 18C8.5 18 1 13 1 7.5C1 4.5 4.4 2 8.5 2C12.6 2 16 4.5 16 7.5C16 13 8.5 18 8.5 18Z" fill="#c8dfc0" />
         </svg>
 
-        <TreeDisplay />
+        <TreeDisplay stage={completedMilestones} />
 
         <div className="font-serif text-[17px] mt-2 leading-[1.45]" style={{ color: 'var(--color-text-primary)' }}>
             Маленькие шаги сегодня —<br /><em>сила завтра.</em>

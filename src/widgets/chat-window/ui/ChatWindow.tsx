@@ -51,7 +51,7 @@ export const ChatWindow = () => {
             )}
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 flex flex-col gap-4 overflow-y-auto pb-4">
+            <div ref={scrollRef} className="flex-1 flex flex-col gap-4 overflow-y-auto pb-4 scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                 {messages.length === 0 && isConnected && (
                     <div className="text-center text-[13px] mt-8" style={{ color: 'var(--color-text-muted)' }}>
                         Напишите что-нибудь, чтобы начать

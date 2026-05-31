@@ -9,20 +9,34 @@ const COLORS: Record<AmountVariant, string> = {
 
 interface AmountInputProps {
     variant?: AmountVariant;
+    value?: string;
+    onChange?: (v: string) => void;
 }
 
-export const AmountInput = ({ variant = 'income' }: AmountInputProps) => {
-    const [value, setValue] = useState('');
+export const AmountInput = ({ variant = 'income', value: controlledValue, onChange }: AmountInputProps) => {
+    const [internal, setInternal] = useState('');
     const color = COLORS[variant];
+    const isControlled = controlledValue !== undefined;
+    const value = isControlled ? controlledValue : internal;
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const digits = e.target.value.replace(/\D/g, '');
+        if (isControlled) {
+            onChange?.(digits);
+        } else {
+            setInternal(digits);
+        }
+    };
 
     return (
         <div className="rounded-[18px] p-4 border" style={{ background: 'var(--color-surface)', borderColor: color }}>
             <div className="text-[12px] font-semibold mb-3" style={{ color: 'var(--color-text-muted)' }}>СУММА</div>
             <div className="flex items-center gap-2">
                 <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={handleChange}
                     placeholder="0"
                     className="flex-1 text-[36px] font-bold outline-none bg-transparent"
                     style={{ color }}

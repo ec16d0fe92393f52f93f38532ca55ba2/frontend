@@ -27,7 +27,7 @@ export const BottomNav = () => (
                         fab ? (
                             <>
                                 <div
-                                    className="fab-pulse w-[54px] h-[54px] flex items-center justify-center rounded-[18px] -translate-y-3"
+                                    className="fab-pulse w-[54px] h-[54px] flex items-center justify-center rounded-[18px]"
                                     style={{ background: 'var(--color-primary)' }}
                                 >
                                     <Icon as={icon} size={24} color="#fff" />

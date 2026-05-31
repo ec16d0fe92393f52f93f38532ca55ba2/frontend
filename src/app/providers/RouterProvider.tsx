@@ -1,9 +1,9 @@
 import { createBrowserRouter, redirect } from 'react-router-dom';
 import {
     LoginPage, RegisterPage,
-    HomePage, ProfilePage, DreamPage, CameraPage, ChatPage,
+    HomePage, ProfilePage, DreamPage, DreamCreatePage, DreamEditPage, CameraPage, ChatPage,
     LearnPage, ChallengesPage,
-    AnalyticsPage, SettingsPage, MarketPage,
+    AnalyticsPage, SettingsPage, MarketPage, MarketCategoryPage,
     ExpenseEntryPage, IncomeEntryPage,
 } from '@pages';
 
@@ -21,6 +21,8 @@ export const router = createBrowserRouter([
                 children: [
                     { index: true, element: <HomePage /> },
                     { path: '/dream', element: <DreamPage /> },
+                    { path: '/dream/create', element: <DreamCreatePage /> },
+                    { path: '/dream/edit', element: <DreamEditPage /> },
                     { path: '/camera', element: <CameraPage /> },
                     { path: '/chat', element: <ChatPage /> },
                     { path: '/profile', element: <ProfilePage /> },
@@ -29,6 +31,7 @@ export const router = createBrowserRouter([
                     { path: '/analytics', element: <AnalyticsPage /> },
                     { path: '/settings', element: <SettingsPage /> },
                     { path: '/market', element: <MarketPage /> },
+                    { path: '/market/category/:id', element: <MarketCategoryPage /> },
                     { path: '/expense', element: <ExpenseEntryPage /> },
                     { path: '/income', element: <IncomeEntryPage /> },
                 ],

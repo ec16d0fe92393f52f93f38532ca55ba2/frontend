@@ -74,14 +74,22 @@ export const useChat = (): UseChatReturn => {
         };
 
         ws.onmessage = (event: MessageEvent) => {
-            console.log('[useChat] ws message:', event.data);
-
             let parsed: unknown;
             try {
                 parsed = JSON.parse(event.data);
             } catch {
-                // plain text — treat as bot message
-                setMessages((prev) => [...prev, { id: nextId(), from: 'bot', text: event.data }]);
+                // plain text — try to extract embedded JSON (e.g. "Ответ на: {...}")
+                let text: string = event.data as string;
+                const jsonStart = text.indexOf('{');
+                if (jsonStart !== -1) {
+                    try {
+                        const embedded = JSON.parse(text.slice(jsonStart)) as { text?: string };
+                        if (embedded.text) {
+                            text = text.slice(0, jsonStart).trim() + ' ' + embedded.text;
+                        }
+                    } catch { /* keep original */ }
+                }
+                setMessages((prev) => [...prev, { id: nextId(), from: 'bot', text }]);
                 setIsTyping(false);
                 return;
             }

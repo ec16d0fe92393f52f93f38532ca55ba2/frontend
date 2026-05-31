@@ -1,19 +1,58 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
+import { toast } from 'react-toastify';
 
 import { CategoryGrid } from '@widgets/category-grid';
 
-import { Tabs, FloatingInput, Icon, DateSelector, AmountInput } from '@shared/ui';
+import { addTransaction, selectTransactions } from '@entities/transaction';
+import { selectBalance, setBalance } from '@entities/balance';
+
+import { Tabs, FloatingInput, Icon, DateSelector, AmountInput, type DateOption } from '@shared/ui';
 import { MOCK_CATEGORIES_EXPENSE } from '@shared/mocks';
+import { useAppDispatch, useAppSelector } from '@shared/hooks';
 
 type EntryTab = 'expense' | 'income';
 const TABS: readonly { value: EntryTab; label: string }[] = [{ value: 'expense', label: 'Расходы' }, { value: 'income', label: 'Доходы' }];
 
 export const ExpenseEntryPage = () => {
     const navigate = useNavigate();
+    const dispatch = useAppDispatch();
+    const balance = useAppSelector(selectBalance);
+    const transactions = useAppSelector(selectTransactions);
+
     const [category, setCategory] = useState('');
+    const [amount, setAmount] = useState('');
+    const [date, setDate] = useState<DateOption>('Сегодня');
+
     const handleTabChange = (v: EntryTab) => { if (v === 'income') navigate('/income'); };
+
+    const canSubmit = Number(amount) > 0 && category !== '';
+
+    const handleSubmit = () => {
+        if (!canSubmit) return;
+        const num = Number(amount);
+        const categoryLabel = MOCK_CATEGORIES_EXPENSE.find((c) => c.id === category)?.label ?? category;
+        const time = new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+
+        dispatch(addTransaction({
+            id: Date.now().toString(),
+            title: categoryLabel,
+            amount: -num,
+            category,
+            date: `${date}, ${time}`,
+            type: 'expense',
+        }));
+        dispatch(setBalance({
+            ...balance,
+            total: balance.total - num,
+            expenses: balance.expenses + num,
+        }));
+        toast.success('Расход добавлен');
+        navigate(-1);
+    };
+
+    void transactions;
 
     return (
         <div className="flex flex-col gap-4 animate-fade-in-up">
@@ -25,12 +64,16 @@ export const ExpenseEntryPage = () => {
                 <div className="text-[18px] font-bold" style={{ color: 'var(--color-text-primary)' }}>Новая запись</div>
             </div>
             <Tabs tabs={TABS} active="expense" onChange={handleTabChange} variant="expense" />
-            <AmountInput variant="expense" />
-            <DateSelector activeColor="var(--color-expense)" />
+            <AmountInput variant="expense" value={amount} onChange={setAmount} />
+            <DateSelector activeColor="var(--color-expense)" value={date} onChange={setDate} />
             <CategoryGrid categories={MOCK_CATEGORIES_EXPENSE} selected={category} onSelect={setCategory} />
             <FloatingInput label="Комментарий (необязательно)" />
-            <button type="button" className="btn-press w-full py-4 rounded-[16px] text-[15px] font-bold text-white"
-                style={{ background: 'var(--color-expense)' }}>
+            <button
+                type="button"
+                onClick={handleSubmit}
+                disabled={!canSubmit}
+                className="btn-press w-full py-4 rounded-[16px] text-[15px] font-bold text-white transition-opacity"
+                style={{ background: canSubmit ? 'var(--color-expense)' : 'var(--color-border)', opacity: canSubmit ? 1 : 0.6 }}>
                 Добавить расход
             </button>
         </div>

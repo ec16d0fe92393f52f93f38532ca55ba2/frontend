@@ -16,12 +16,14 @@ export const ChatMessage = ({ message, onChipClick }: ChatMessageProps) => {
                     🌿
                 </div>
             )}
-            <div className="max-w-[75%] flex flex-col gap-2">
-                <div className="rounded-[16px] px-3 py-2.5 text-[13px] leading-[1.5]"
+            <div className="max-w-[75%] min-w-0 flex flex-col gap-2">
+                <div className="rounded-[16px] px-3 py-2.5 text-[13px] leading-[1.5] break-words whitespace-pre-wrap"
                     style={{
                         background: isBot ? 'var(--color-surface-alt)' : 'var(--color-primary)',
                         color: isBot ? 'var(--color-text-primary)' : '#fff',
                         borderRadius: isBot ? '4px 16px 16px 16px' : '16px 4px 16px 16px',
+                        wordBreak: 'break-word',
+                        overflowWrap: 'anywhere',
                     }}>
                     {message.text}
                 </div>

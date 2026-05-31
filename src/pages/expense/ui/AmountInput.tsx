@@ -11,9 +11,10 @@ export const AmountInput = ({ color = 'var(--color-expense)' }: AmountInputProps
             <div className="text-[12px] font-semibold mb-3" style={{ color: 'var(--color-text-muted)' }}>СУММА</div>
             <div className="flex items-center gap-2">
                 <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     value={value}
-                    onChange={(e) => setValue(e.target.value)}
+                    onChange={(e) => setValue(e.target.value.replace(/\D/g, ''))}
                     placeholder="0"
                     className="flex-1 text-[36px] font-bold outline-none bg-transparent"
                     style={{ color: color }}

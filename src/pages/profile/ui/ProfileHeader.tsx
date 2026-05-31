@@ -1,11 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 import { Settings, User } from 'lucide-react';
 
+import { selectUser } from '@entities/user';
+
 import { Icon } from '@shared/ui';
-import { MOCK_USER } from '@shared/mocks';
+import { useAppSelector } from '@shared/hooks';
 
 export const ProfileHeader = () => {
     const navigate = useNavigate();
+    const user = useAppSelector(selectUser);
+    const fullName = user ? `${user.firstname} ${user.lastname}` : 'Пользователь';
+
     return (
         <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -15,7 +20,7 @@ export const ProfileHeader = () => {
                 </div>
                 <div>
                     <div className="text-[16px] font-bold" style={{ color: 'var(--color-text-primary)' }}>
-                        {MOCK_USER.firstName} {MOCK_USER.lastName}
+                        {fullName}
                     </div>
                     <div className="flex items-center gap-[5px] mt-[2px]">
                         <div className="w-[7px] h-[7px] rounded-full" style={{ background: 'var(--color-primary)' }} />

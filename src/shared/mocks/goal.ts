@@ -39,6 +39,11 @@ export const MOCK_MILESTONES: Milestone[] = [
         date: 'Февраль',
         xp: 25,
         status: 'completed',
+        subtasks: [
+            { id: 's1', text: 'Перевести 500 ₽ на счёт', done: true },
+            { id: 's2', text: 'Пропустить кофе сегодня', done: false },
+            { id: 's3', text: 'Продать ненужную вещь', done: false },
+        ],
     },
     {
         id: '3',
@@ -60,6 +65,11 @@ export const MOCK_MILESTONES: Milestone[] = [
         date: 'Июнь — Август',
         xp: 40,
         status: 'locked',
+        subtasks: [
+            { id: 's1', text: 'Перевести 500 ₽ на счёт', done: true },
+            { id: 's2', text: 'Пропустить кофе сегодня', done: false },
+            { id: 's3', text: 'Продать ненужную вещь', done: false },
+        ],
     },
     {
         id: '5',

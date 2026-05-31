@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from '@shared/types/store';
 
@@ -20,8 +20,11 @@ export const userSlice = createSlice({
             state.user = action.payload;
         },
         removeUser: () => initialState,
+        updateProfile: (state, action: PayloadAction<Partial<User>>) => {
+            if (state.user) state.user = { ...state.user, ...action.payload };
+        },
     },
 });
 
-export const { setUser, removeUser } = userSlice.actions;
+export const { setUser, removeUser, updateProfile } = userSlice.actions;
 export const selectUser = (state: RootState) => state.user.user;

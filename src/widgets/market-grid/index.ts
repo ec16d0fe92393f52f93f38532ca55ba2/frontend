@@ -1,1 +1,1 @@
-export { MarketGrid } from './ui';
+export { MarketGrid, SkinCard } from './ui';

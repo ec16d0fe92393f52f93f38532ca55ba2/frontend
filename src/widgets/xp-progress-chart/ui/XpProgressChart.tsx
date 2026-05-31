@@ -1,13 +1,16 @@
-import { MOCK_XP_HISTORY } from '@shared/mocks';
+import { selectXpHistory } from '@entities/tree';
+
+import { useAppSelector } from '@shared/hooks';
 
 const W = 280;
 const H = 80;
 const PAD = 12;
 
 export const XpProgressChart = () => {
-    const maxVal = Math.max(...MOCK_XP_HISTORY.map((d) => d.value));
-    const pts = MOCK_XP_HISTORY.map((d, i) => {
-        const x = PAD + (i / (MOCK_XP_HISTORY.length - 1)) * (W - PAD * 2);
+    const xpHistory = useAppSelector(selectXpHistory);
+    const maxVal = Math.max(...xpHistory.map((d) => d.value));
+    const pts = xpHistory.map((d, i) => {
+        const x = PAD + (i / (xpHistory.length - 1)) * (W - PAD * 2);
         const y = H - PAD - ((d.value / maxVal) * (H - PAD * 2));
         return { x, y, ...d };
     });

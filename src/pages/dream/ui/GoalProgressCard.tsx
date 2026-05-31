@@ -1,8 +1,11 @@
-import { MOCK_GOAL } from '@shared/mocks';
+import { selectGoal } from '@entities/goal';
+
+import { useAppSelector } from '@shared/hooks';
 import { formatRub as fmt } from '@shared/utils';
 
 export const GoalProgressCard = () => {
-    const pct = Math.round((MOCK_GOAL.current / MOCK_GOAL.target) * 100);
+    const goal = useAppSelector(selectGoal);
+    const pct = Math.round((goal.current / goal.target) * 100);
     const r = 44;
     const circ = 2 * Math.PI * r;
     const dash = circ * (pct / 100);
@@ -23,12 +26,12 @@ export const GoalProgressCard = () => {
                     </div>
                 </div>
                 <div className="flex-1">
-                    <div className="text-[15px] font-bold" style={{ color: 'var(--color-text-primary)' }}>{MOCK_GOAL.title}</div>
+                    <div className="text-[15px] font-bold" style={{ color: 'var(--color-text-primary)' }}>{goal.title}</div>
                     <div className="text-[12px] mt-1" style={{ color: 'var(--color-text-secondary)' }}>
-                        {fmt(MOCK_GOAL.current)} ₽ из {fmt(MOCK_GOAL.target)} ₽
+                        {fmt(goal.current)} ₽ из {fmt(goal.target)} ₽
                     </div>
                     <div className="text-[11px] mt-1 font-medium" style={{ color: 'var(--color-primary)' }}>
-                        Дедлайн: {MOCK_GOAL.deadline}
+                        Дедлайн: {goal.deadline}
                     </div>
                 </div>
             </div>

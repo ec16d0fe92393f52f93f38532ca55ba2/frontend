@@ -1,1 +1,1 @@
-export { DreamPage } from './ui';
+export { DreamPage, DreamCreatePage, DreamEditPage } from './ui';
